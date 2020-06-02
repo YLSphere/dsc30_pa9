@@ -33,7 +33,7 @@ public class HCTreeTester {
     }
 
 
-    @org.junit.Test
+    @Test
     public void buildTree() {
         inorderTraversal(test.getRoot());
     }
