@@ -1,9 +1,5 @@
 import org.junit.jupiter.api.Test;
 
-import java.util.PrimitiveIterator;
-import java.util.PriorityQueue;
-
-//import static org.junit.Assert.*;
 
 public class HCTreeTester {
     private HCTree test = new HCTree();
@@ -31,5 +27,4 @@ public class HCTreeTester {
         }
 
     }
-
 }
