@@ -9,14 +9,6 @@ public class HCTreeTester {
     private HCTree test = new HCTree();
 
     @Test
-    public void getRoot() {
-    }
-
-    @Test
-    public void setRoot() {
-    }
-
-    @Test
     public void buildTree() {
         int[] freq = new int[256];
         freq[10] = 1;
@@ -40,20 +32,4 @@ public class HCTreeTester {
 
     }
 
-
-    @Test
-    public void encode() {
-    }
-
-    @Test
-    public void decode() {
-    }
-
-    @Test
-    public void encodeHCTree() {
-    }
-
-    @Test
-    public void decodeHCTree() {
-    }
 }

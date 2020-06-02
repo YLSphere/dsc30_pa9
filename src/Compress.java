@@ -1,6 +1,6 @@
 /*
- * Name: TODO
- * PID: TODO
+ * Name: Yin Lam Lai
+ * PID: A15779757
  */
 
 import java.io.DataOutputStream;
@@ -12,8 +12,8 @@ import java.nio.file.Paths;
 /**
  * Compress the first given file to the second given file using Huffman coding
  * 
- * @author TODO
- * @since TODO
+ * @author Yin Lam Lai
+ * @since A15779757
  */
 public class Compress {
 
@@ -35,20 +35,28 @@ public class Compress {
         DataOutputStream out = new DataOutputStream(file);
         BitOutputStream bitOut = new BitOutputStream(out);
 
-        /* START OF TODO */
 
-        // construct HCTree from the file
+        out.writeInt(input.length);
 
-        // write number of bytes to out file
+        int[] freq = new int[256];
+        for (byte n: input) {
+            freq[(n & 0xff)]++;
+        }
 
-        // encode HCTree and every byte
+        HCTree tree = new HCTree();
+        tree.buildTree(freq);
 
-        /* END OF TODO */
+        tree.encodeHCTree(tree.getRoot(), bitOut);
 
-        // There might be several padding bits in the bitOut that we haven't written, so
-        // flush it first.
+
+
+        for (byte n: input) {
+            tree.encode(n, bitOut);
+        }
+
         bitOut.flush();
         out.close();
         file.close();
     }
+
 }

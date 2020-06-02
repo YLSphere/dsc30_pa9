@@ -1,6 +1,6 @@
 /*
- * Name: TODO
- * PID: TODO
+ * Name: Yin Lam Lai
+ * PID: A15779757
  */
 
 import java.io.*;
@@ -162,15 +162,14 @@ public class HCTree {
 
         @Override
         public int compareTo(HCNode o) {
-            if(this.getFreq() > o.getFreq()) {
+            if (this.getFreq() > o.getFreq()) {
                 return 1;
             } else if (this.getFreq() < o.getFreq()) {
                 return -1;
             } else {
                 if ((this.getSymbol() & 0xff) < (o.getSymbol() & 0xff)) {
                     return -1;
-                }
-                else {
+                } else {
                     return 1;
                 }
             }
@@ -196,9 +195,9 @@ public class HCTree {
     }
 
     /**
-     * TODO
+     * Builds a Huffman tree from frequency array
      *
-     * @param freq
+     * @param freq frequency array of characters
      */
     public void buildTree(int[] freq) {
         PriorityQueue<HCNode> priorityQueue = new PriorityQueue();
@@ -211,7 +210,6 @@ public class HCTree {
             }
 
         }
-        System.out.println("SIZE: " + priorityQueue.size());
 
 
         while (priorityQueue.size() > 1) {
@@ -234,50 +232,44 @@ public class HCTree {
     }
 
     /**
-     * TODO
+     * Encodes a given symbol in bytes with a known huffman tree
      *
-     * @param symbol
-     * @param out
+     * @param symbol encoded symbol
+     * @param out bit stream output for encoding
      * @throws IOException
      */
     public void encode(byte symbol, BitOutputStream out) throws IOException {
-        for (HCNode n : leaves) {
-            if (n.getSymbol() == symbol) {
-                HCNode starter = n;
-                String bitStream = "";
-                while (starter != getRoot()) {
-                    if (starter.getParent().getC0() == starter) {
-                        bitStream += 0;
-                        starter = starter.getParent();
-                    } else if (starter.getParent().getC1() == starter) {
-                        bitStream += 1;
-                        starter = starter.getParent();
-                    }
-                }
-
-
-                for (int i = bitStream.length() - 1; i >= 0; i--) {
-                    out.writeBit(bitStream.charAt(i));
-                }
-
-
+        HCNode starter = leaves[symbol & 0xff];
+        Stack<Integer> stack = new Stack<>();
+        while (starter != getRoot()) {
+            if (starter.getParent().getC0().equals(starter)) {
+                stack.push(0);
+                starter = starter.getParent();
+            } else if (starter.getParent().getC1().equals(starter)) {
+                stack.push(1);
+                starter = starter.getParent();
             }
+        }
+
+
+        while (!stack.isEmpty()) {
+            out.writeBit(stack.pop());
         }
 
 
     }
 
     /**
-     * TODO
+     * Decodes incoming bit stream into a single symbol in bytes from known huffman tree
      *
-     * @param in
-     * @return
+     * @param in bit stream input
+     * @return Symbol in bytes
      * @throws IOException
      */
     public byte decode(BitInputStream in) throws IOException {
         HCNode start = root;
 
-        while (start.getC1() != null || start.getC0() != null) {
+        while (!start.isLeaf()) {
             int bit = in.readBit();
             if (bit == 1) {
                 start = start.getC1();
@@ -289,25 +281,53 @@ public class HCTree {
     }
 
     /**
-     * TODO
+     * Encodes huffman tree into bit stream output
      *
-     * @param node
-     * @param out
+     * @param node Root of huffman tree
+     * @param out Bitstream output
      * @throws IOException
      */
     public void encodeHCTree(HCNode node, BitOutputStream out) throws IOException {
-        /* TODO */
+        if (node != null) {
+            if (node.isLeaf()) {
+                out.writeBit(1);
+                System.out.println(node.toString());
+                out.writeByte(node.getSymbol());
+            } else {
+                out.writeBit(0);
+
+            }
+            encodeHCTree(node.getC0(), out);
+            encodeHCTree(node.getC1(), out);
+        }
     }
 
     /**
-     * TODO
+     * Decodes huffman tree
      *
-     * @param in
+     * @param in bitstream input
      * @return
      * @throws IOException
      */
     public HCNode decodeHCTree(BitInputStream in) throws IOException {
-        /* TODO */
+        int read = in.readBit();
+        if (read == 1) {
+            byte byteRead = in.readByte();
+            HCNode nodeReturned = new HCNode(byteRead, 1);
+            leaves[byteRead & 0xff] = nodeReturned;
+            return nodeReturned;
+
+        } else if (read == 0) {
+            HCNode parent = new HCNode((byte) 1, 1);
+            HCNode child0 = decodeHCTree(in);
+            HCNode child1 = decodeHCTree(in);
+            child1.setParent(parent);
+            child0.setParent(parent);
+            parent.setC0(child0);
+            parent.setC1(child1);
+            setRoot(parent);
+            return parent;
+        }
         return null;
     }
 
