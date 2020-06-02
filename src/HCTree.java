@@ -200,7 +200,7 @@ public class HCTree {
      * @param freq frequency array of characters
      */
     public void buildTree(int[] freq) {
-        PriorityQueue<HCNode> priorityQueue = new PriorityQueue();
+        PriorityQueue<HCNode> priorityQueue = new PriorityQueue<>();
 
         for (int n = 0; n < freq.length; n++) {
             if (freq[n] != 0) {
